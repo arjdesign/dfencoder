@@ -124,6 +124,7 @@ class AutoEncoder(torch.nn.Module):
             progress_bar=True,
             n_megabatches=1,
             scaler='standard',
+            eps,
             *args,
             **kwargs
         ):
@@ -184,6 +185,7 @@ class AutoEncoder(torch.nn.Module):
         self.scaler = scaler
 
         self.n_megabatches = n_megabatches
+        self.eps = eps
 
     def get_scaler(self, name):
         scalers = {
@@ -331,6 +333,13 @@ class AutoEncoder(torch.nn.Module):
                 weight_decay=self.weight_decay,
 
             )
+        elif self.optimizer == 'adamW':
+            return torch.optim.AdamW(
+                params,
+                lr,
+                betas = self.betas,
+                eps = self.eps)
+                
 
     def build_model(self, df):
         """
